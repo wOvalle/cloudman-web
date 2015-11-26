@@ -1,7 +1,7 @@
 {
   "name": "cloudman-web",
   "version": "1.0.0",
-  "description": "Web interface for cloudman-api",
+  "description": "Web client for cloudman-api",
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
