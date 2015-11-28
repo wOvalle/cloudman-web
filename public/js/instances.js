@@ -9,13 +9,14 @@ $(function(){
             "dataSrc": ""
         },
         'columns': [
-            {"data" : "provider", title: 'Provider'},
+            {"data" : "cloudProvider.provider", title: 'Provider'},
             {"data" : "id", title: 'Id'},
             {"data" : "zone", title: 'Zone'},
             {"data" : "os", title: 'OS'},
             {"data" : "type", title: 'type'},
             {"data" : "public_dns_name", title: 'DNS'},
-            {"data" : "state", title: 'State'}
+            {"data" : "state", title: 'State'},
+            {"data" : "cloudProvider.keyName", title: 'CSP.Id'}
         ]
     });
 });
