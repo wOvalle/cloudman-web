@@ -81,7 +81,7 @@ $(function(){
             type : $('#select-type :selected').val(),
             image: $('#select-image :selected').val(),
             region: $('#select-region :selected').val(),
-            name: 'cloudman' + (new Date()).getTime()
+            name: $('#name').val()
         };
 
         var newInstance = {
