@@ -12,6 +12,7 @@ $(function(){
             //{"data" : "false"},
             {"data" : "cloudProvider.provider", title: 'Provider'},
             {"data" : "id", title: 'Id'},
+            {"data" : "name", title: 'Name'},
             {"data" : "zone", title: 'Zone'},
             {"data" : "os", title: 'OS'},
             {"data" : "type", title: 'type'},
