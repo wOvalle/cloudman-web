@@ -29,37 +29,37 @@ router.post('/instances', function(req, res, next) {
     cloudman.start(params.data).then(function(r){
       res.json(r);
     }).catch(function (err) {
-      res.status(500).send(err);
+      next(err);
     });
   }
   else if (params.method === 'stop') {
     cloudman.stop(params.data).then(function(r){
       res.json(r);
     }).catch(function (err) {
-      res.status(500).send(err);
+      next(err);
     });
   }
   else if (params.method === 'terminate') {
     cloudman.terminate(params.data).then(function(r){
       res.json(r);
     }).catch(function (err) {
-      res.status(500).send(err);
+      next(err);
     });
   }
   else if (params.method === 'create') {
     if(!params.newInstance) {
-      res.status(500).send({message: 'No properties passed'});
+      next(new Error({message: 'No properties passed'}));
       return;
     }
 
     cloudman.create(params.newInstance).then(function(r){
       res.json(r);
     }).catch(function (err) {
-      res.status(500).send(err);
+      next(err);
     });
   }
   else {
-    res.status(500).send({message: 'method __ not implemented'.replace('__', data.method)});
+    next(new Error({message: 'method __ not implemented'.replace('__', data.method)}));
   }
 });
 

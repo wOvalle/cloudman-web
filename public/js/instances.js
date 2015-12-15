@@ -12,6 +12,7 @@ $(function(){
             //{"data" : "false"},
             {"data" : "cloudProvider.provider", title: 'Provider'},
             {"data" : "id", title: 'Id'},
+            {"data" : "name", title: 'Name'},
             {"data" : "zone", title: 'Zone'},
             {"data" : "os", title: 'OS'},
             {"data" : "type", title: 'type'},
@@ -63,7 +64,6 @@ $(function(){
     });
 
     $('button.btn-primary').click(function(e){
-       // execAction('create');
         setProvidersSelect();
         $('#createModal').removeClass('hide');
         $('#createModal').modal();
@@ -93,6 +93,9 @@ $(function(){
             $('.modal').modal('hide');
             parseActionExecution(res);
             refreshTable();
+        }, function(err){
+            $('.modal').modal('hide');
+            showError(err, 5000);
         });
 
 
@@ -153,7 +156,7 @@ function execAction(action, newInstance){
         var instances = getSelectedRows();
         cmanData = {
             data: instances.map(function (it, i) {
-                return {keyName: it[6], instanceId: it[1]}
+                return {keyName: it[7], instanceId: it[1]}
             }), method: action
         };
     }
@@ -163,20 +166,17 @@ function execAction(action, newInstance){
 
     post('/api/instances', cmanData, function(res){
         parseActionExecution(res);
-        console.log(res);
         refreshTable();
-    }, function(err){console.log(err); showAlert(err, 'danger')});
+    }, showError);
 };
 
-function execCreate(newInstance, cb){
+function execCreate(newInstance, cb, err){
     var cmanData = {newInstance: [newInstance], method: 'create'};
 
     post('/api/instances', cmanData, function(res){
         cb(res);
-    }, function(err){cb(err); console.log(err); showAlert(err, 'danger')});
+    }, err);
 };
-
-
 
 
 //wrapper to $.ajax since we cannot add contentType header to $.post
@@ -190,6 +190,15 @@ function post(url, data, success, err){
         success: success,
         error: err
     });
+};
+
+function showError(err, delay){
+    console.log(err);
+    var jsonError = JSON.parse(err.responseText);
+
+    var text = jsonError.message || jsonError.error || "Generic server error";
+
+    showAlert(text, 'danger', delay);
 };
 
 function refreshTable(source){
