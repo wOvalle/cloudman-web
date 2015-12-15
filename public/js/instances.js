@@ -89,6 +89,12 @@ $(function(){
             properties: properties
         };
 
+        if(!provider) {
+            $('.modal').modal('hide');
+            showError(new Error('No provider selected'), 5000);
+            return;
+        }
+
         execCreate(newInstance, function(res){
             $('.modal').modal('hide');
             parseActionExecution(res);
@@ -149,11 +155,21 @@ function getSelectedRows(){
 };
 
 function execAction(action, newInstance){
-    if(!action) return;
+    if(!action) {
+        showError(new Error('No action selected'));
+        return;
+    }
+
+    var instances = getSelectedRows();
+
      var cmanData;
 
     if(action !== 'create') {
-        var instances = getSelectedRows();
+        if(instances.length === 0){
+            showError(new Error('No rows selected'));
+            return;
+        };
+
         cmanData = {
             data: instances.map(function (it, i) {
                 return {keyName: it[7], instanceId: it[1]}
@@ -166,7 +182,7 @@ function execAction(action, newInstance){
 
     post('/api/instances', cmanData, function(res){
         parseActionExecution(res);
-        refreshTable();
+        refreshTable(2);
     }, showError);
 };
 
@@ -194,7 +210,11 @@ function post(url, data, success, err){
 
 function showError(err, delay){
     console.log(err);
-    var jsonError = JSON.parse(err.responseText);
+    var jsonError;
+    if($.type(err) === "object" && err.responseText)
+        jsonError = JSON.parse(err.responseText);
+    else
+        jsonError = {message: err.message};
 
     var text = jsonError.message || jsonError.error || "Generic server error";
 
@@ -202,10 +222,16 @@ function showError(err, delay){
 };
 
 function refreshTable(source){
-    console.log('table refreshed at ' + (new Date()).toISOString());
+
+    if(getSelectedRows().length > 0 && !source)
+        return;
+
     $('#instances-table').DataTable().ajax.reload();
+
     if(source && source === 1)
         showAlert('Table refreshed', 'info');
+
+    console.log('table refreshed at ' + (new Date()).toISOString());
 }
 
 function parseActionExecution(response){
